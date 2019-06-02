@@ -1,0 +1,42 @@
+import React from "react";
+import P5Wrapper from "react-p5-wrapper";
+import sketch from "../sketches/LandingPageSketch";
+
+class LandingPage extends React.Component {
+  //passed down into our landing page sketch
+  state = {
+    clicked: false
+  };
+
+  handleClick = e => {
+    this.setState({
+      clicked: true
+    });
+  };
+
+  render() {
+    return (
+      <div id="landing-page">
+        <P5Wrapper
+          sketch={sketch}
+          clicked={this.state.clicked}
+          history={this.props.history}
+          loggedIn={this.props.loggedIn}
+        />
+        {/* <button
+          onClick={this.handleClick}
+          className="landing-page-b"
+          style={{
+            position: "absolute",
+            left: window.innerWidth / 2 - 75,
+            top: window.innerHeight / 2 + 30
+          }}
+        >
+          get started
+        </button> */}
+      </div>
+    );
+  }
+}
+
+export default LandingPage;
