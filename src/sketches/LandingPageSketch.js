@@ -75,17 +75,26 @@ export default function sketch(p) {
 
   //let circles = [];
   let ball = {
-    x: 100,
-    y: 100,
-    r: 100
+    x: 610,
+    y: 330,
+    r: 50
   };
 
   let prevX = 0;
   let prevY = 0;
   let prevR = 0;
 
+  let width;
+  let height;
+
   p.setup = function() {
-    let canvas = p.createCanvas(640, 360); //window.innerHeight
+    width = document.getElementById("right").offsetWidth;
+    height = document.getElementById("right").offsetHeight;
+
+    let canvas = p.createCanvas(width, height); //window.innerHeight
+
+    console.log(width);
+    console.log(height);
     //this.circles();
     //canvas.mouseMoved(test);
   };
@@ -94,9 +103,9 @@ export default function sketch(p) {
     if (
       webSocket.readyState !== 1 ||
       p.mouseX < 0 ||
-      p.mouseX > 640 ||
+      p.mouseX > width ||
       p.mouseY < 0 ||
-      p.mouseY > 360
+      p.mouseY > height
     ) {
       return;
     }
@@ -218,9 +227,9 @@ export default function sketch(p) {
     if (
       webSocket.readyState !== 1 ||
       p.mouseX < 0 ||
-      p.mouseX > 640 ||
+      p.mouseX > width ||
       p.mouseY < 0 ||
-      p.mouseY > 360
+      p.mouseY > height
     ) {
       return;
     }
