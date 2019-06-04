@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
+import { alertUser } from "../actions/alertAction";
 import { register } from "../actions/authAction";
-//import { notifyUser } from "../../actions/notifyActions";
 
 class Register extends Component {
   state = {
@@ -22,12 +22,15 @@ class Register extends Component {
   onSubmit = event => {
     event.preventDefault();
 
-    const { register } = this.props;
+    const { register, alertUser } = this.props;
     const { userName, password, repeat, email } = this.state;
 
     if (password !== repeat) {
-      //notifyUser("Passwords do not match", "danger");
-      console.log("Passwords do not match");
+      alertUser(
+        "Passwords do not match. Please make sure both passwords are identical.",
+        "danger",
+        "Password error"
+      );
     } else {
       register({
         userName,
@@ -43,7 +46,7 @@ class Register extends Component {
 
   render() {
     return (
-      <div className="row">
+      <div className="row mt-5">
         <div className="col-md-6 mx-auto">
           <div className="card">
             <div className="card-body">
@@ -62,6 +65,7 @@ class Register extends Component {
                     required
                     value={this.state.userName}
                     onChange={this.onChange}
+                    title="If it doesn't include 69, 420 or at the very least 5 x's, you're never gonna win, just saying"
                   />
                 </div>
                 <div className="form-group">
@@ -73,6 +77,7 @@ class Register extends Component {
                     required
                     value={this.state.email}
                     onChange={this.onChange}
+                    title="Enter a valid unique email address"
                   />
                 </div>
                 <div className="form-group">
@@ -112,38 +117,16 @@ class Register extends Component {
 }
 
 Register.propTypes = {
+  alertUser: PropTypes.func.isRequired,
   register: PropTypes.func.isRequired
 };
 
-// const mapStateToProps = state => ({
-//   auth: state.auth
-// });
+const mapStateToProps = state => ({
+  alert: state.alert,
+  auth: state.auth
+});
 
 export default connect(
-  null,
-  { register }
+  mapStateToProps,
+  { alertUser, register }
 )(Register);
-
-// ---------- REGISTERING NEW USER ---------- //
-
-// const newUser = {
-//   uName: "Henk",
-//   password: "password123",
-//   email: "test@gmail.com"
-// };
-
-// var formBody = [];
-// for (var property in newUser) {
-//   var encodedKey = encodeURIComponent(property);
-//   var encodedValue = encodeURIComponent(newUser[property]);
-//   formBody.push(encodedKey + "=" + encodedValue);
-// }
-// formBody = formBody.join("&");
-
-// fetch("https://example.com/login", {
-//   method: "POST",
-//   headers: {
-//     "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
-//   },
-//   body: formBody
-// });

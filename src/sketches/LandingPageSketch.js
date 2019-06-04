@@ -91,10 +91,11 @@ export default function sketch(p) {
     width = document.getElementById("right").offsetWidth;
     height = document.getElementById("right").offsetHeight;
 
+    ball.x = width - 30;
+    ball.y = height - 30;
+
     let canvas = p.createCanvas(width, height); //window.innerHeight
 
-    console.log(width);
-    console.log(height);
     //this.circles();
     //canvas.mouseMoved(test);
   };

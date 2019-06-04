@@ -2,11 +2,12 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 // //import Logo from "../layout/morc_loading.png";
-// import Logo from "../../images/MORC_v2.png";
+import Logo from "../images/SnekIO_logo.png";
 // import Showcase from "../../images/cards_bg.png";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import LandingPage from "./LandingPage";
+import { login } from "../actions/authAction";
 
 //#region Styled Components
 const Wrapper = styled.div`
@@ -158,27 +159,29 @@ const styles = {
 
 class MainPage extends Component {
   state = {
-    uName: "",
+    email: "",
     password: "",
     loading: false
   };
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.auth) {
-      console.log(nextProps.auth);
-      this.props.history.push("/dashboard");
-    }
-  }
+  // componentWillReceiveProps(nextProps) {
+  //   if (nextProps.auth) {
+  //     console.log(nextProps.auth);
+  //     this.props.history.push("/dashboard");
+  //   }
+  // }
 
   onSubmit = event => {
     event.preventDefault();
 
-    const { login, auth } = this.props;
-    const { uName, password } = this.state;
+    const { login } = this.props;
+    const { email, password } = this.state;
 
-    login(uName, password);
+    login(email, password);
+  };
 
-    console.log(auth);
+  toRegister = () => {
+    this.props.history.push("/register");
   };
 
   onChange = event =>
@@ -190,19 +193,19 @@ class MainPage extends Component {
         <Left id="left">
           <div style={styles.login}>
             <div id="logo" style={styles.logo}>
-              {/* <img style={styles.logo_img} src={Logo} alt="Morc" /> */}
+              <img style={styles.logo_img} src={Logo} alt="SnekIO" />
             </div>
             <form onSubmit={this.onSubmit} style={styles.form}>
               <div>
-                <label htmlFor="Username" style={styles.label}>
-                  Username
+                <label htmlFor="Email" style={styles.label}>
+                  Email Address
                 </label>
                 <input
-                  type="text"
+                  type="email"
                   className="form-control"
-                  name="uName"
+                  name="email"
                   required
-                  value={this.state.uName}
+                  value={this.state.email}
                   onChange={this.onChange}
                   style={styles.text_input}
                 />
@@ -231,27 +234,23 @@ class MainPage extends Component {
               <a href="/" style={styles.link}>
                 Forgot Password
               </a>
-              <a href="/" style={styles.link}>
-                Register New Account
-              </a>
             </div>
             <div style={styles.or}>
               <hr style={styles.bar} />
               <span style={styles.span}>OR</span>
               <hr style={styles.bar} />
             </div>
-            <a
-              href="/"
+            <button
+              type="button"
               className="btn btn-outline-secondary"
-              style={{ color: "white", width: "60%" }}
+              style={{ width: "60%" }}
+              onClick={this.toRegister}
             >
-              <Link to="/register" className="nav-link">
-                Create An Account
-              </Link>
-            </a>
+              Create An Account
+            </button>
           </div>
           <footer style={styles.footer}>
-            <p>Copyright &copy; 2019, Morc All Rights Reserved</p>
+            <p>Copyright &copy; 2019, SnekIO All Rights Reserved</p>
             <div>
               <a
                 style={styles.footer_link}
@@ -295,16 +294,16 @@ class MainPage extends Component {
   }
 }
 
-// LandingPage.propTypes = {
-//   login: PropTypes.func.isRequired,
-//   auth: PropTypes.object.isRequired
-// };
+MainPage.propTypes = {
+  login: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired
+};
 
-// const mapStateToProps = state => ({
-//   auth: state.auth
-// });
+const mapStateToProps = state => ({
+  auth: state.auth
+});
 
 export default connect(
-  null,
-  {}
+  mapStateToProps,
+  { login }
 )(MainPage);

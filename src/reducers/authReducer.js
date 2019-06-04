@@ -1,4 +1,4 @@
-import { REGISTER } from "../actions/types";
+import { LOGIN, REGISTER } from "../actions/types";
 
 const initialState = {
   //token: localStorage.getItem("token"),
@@ -10,6 +10,7 @@ const initialState = {
 export default function(state = initialState, action) {
   const { type, payload } = action;
   switch (type) {
+    case LOGIN:
     case REGISTER:
       //localStorage.setItem("token", payload.token);
       return {
