@@ -9,7 +9,7 @@ const config = {
 
 export const register = newUser => async dispatch => {
   const response = await axios.post(
-    "http://localhost:8100/user",
+    "http://localhost:8100/user/register",
     JSON.stringify(newUser),
     config
   );

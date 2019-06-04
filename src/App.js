@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import "./App.css";
 
@@ -11,15 +11,26 @@ import LandingPage from "./components/LandingPage";
 import Register from "./components/Register";
 import Loading from "./components/Loading";
 import MainPage from "./components/MainPage";
+import Navbar from "./components/Navbar";
+import NotFound from "./components/NotFound";
 
 const App = () => {
   //return <LandingPage />;
   return (
     <Provider store={store}>
       <Router>
-        <div className="container-fluid">
-          <MainPage />
-        </div>
+        <Fragment>
+          <div className="app">
+            <Navbar />
+            <div className="container-fluid">
+              <Switch>
+                <Route exact path="/" component={MainPage} />
+                <Route exact path="/register" component={Register} />
+                <Route component={NotFound} />
+              </Switch>
+            </div>
+          </div>
+        </Fragment>
       </Router>
     </Provider>
   );

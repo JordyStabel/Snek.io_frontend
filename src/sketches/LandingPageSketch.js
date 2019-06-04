@@ -124,6 +124,13 @@ export default function sketch(p) {
     }
   }
 
+  // Resizing the canvas when the webwindow size is changed
+  p.windowResized = () => {
+    width = document.getElementById("right").offsetWidth;
+    height = document.getElementById("right").offsetHeight;
+    p.resizeCanvas(width, height);
+  };
+
   //#region Old code
   // //clean up after redirect
   // p.myCustomRedrawAccordingToNewPropsHandler = function(props) {
