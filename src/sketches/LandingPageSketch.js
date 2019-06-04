@@ -3,6 +3,9 @@ import uuid from "uuid";
 
 let id;
 let players = null;
+let sneks = [];
+
+var snekMap = {};
 
 export default function sketch(p) {
   // Websocket testing stuff
@@ -53,6 +56,7 @@ export default function sketch(p) {
         ball.x = player.inputMouse.x;
         ball.y = player.inputMouse.y;
         ball.r = 50;
+        sneks = player.sneks;
       }
     });
 
@@ -88,8 +92,13 @@ export default function sketch(p) {
   let height;
 
   p.setup = function() {
-    width = document.getElementById("right").offsetWidth;
-    height = document.getElementById("right").offsetHeight;
+    try {
+      width = document.getElementById("right").offsetWidth;
+      height = document.getElementById("right").offsetHeight;
+    } catch {
+      height = window.innerHeight - 56;
+      width = window.innerWidth;
+    }
 
     ball.x = width - 30;
     ball.y = height - 30;
@@ -209,29 +218,6 @@ export default function sketch(p) {
   //#endregion
 
   p.draw = () => {
-    p.background(50);
-    p.noStroke();
-    p.fill(255, 0, 255);
-    // Draw other players
-    if (players !== null) {
-      players.map(player => {
-        p.circle(player.inputMouse.x, player.inputMouse.y, 20);
-      });
-    }
-
-    let x = p.lerp(prevX, ball.x, 0.05);
-    let y = p.lerp(prevY, ball.y, 0.05);
-    let r = p.lerp(prevR, ball.r, 0.05);
-
-    p.fill(255, 255, 0);
-    p.circle(x, y, r);
-    p.fill(0, 255, 0);
-    p.circle(ball.x, ball.y, 10);
-
-    prevX = x;
-    prevY = y;
-    prevR = r;
-
     if (
       webSocket.readyState !== 1 ||
       p.mouseX < 0 ||
@@ -251,5 +237,45 @@ export default function sketch(p) {
       content: JSON.stringify(input)
     };
     webSocket.send(JSON.stringify(message));
+
+    p.background(50);
+    p.fill(255, 0, 255);
+
+    // Draw other players
+    if (players !== null) {
+      players.map(player => {
+        p.circle(player.inputMouse.x, player.inputMouse.y, 20);
+        player.sneks.map(snek => {
+          // Add snek to map for first time
+          if (snekMap[snek.uuid] == null) {
+            snekMap[snek.uuid] = snek;
+          }
+          let _snek = snekMap[snek.uuid];
+          let x = p.lerp(_snek.x, snek.x, 0.05);
+          let y = p.lerp(_snek.y, snek.y, 0.05);
+          p.circle(x, y, snek.r);
+
+          _snek.x = x;
+          _snek.y = y;
+        });
+      });
+    }
+
+    let x = p.lerp(prevX, ball.x, 0.05);
+    let y = p.lerp(prevY, ball.y, 0.05);
+    let r = p.lerp(prevR, ball.r, 0.05);
+
+    // sneks.map(snek => {
+    //   p.circle(snek.x, snek.y, snek.r);
+    // });
+
+    p.fill(255, 255, 0);
+    p.circle(x, y, r);
+    p.fill(0, 255, 0);
+    p.circle(ball.x, ball.y, 10);
+
+    prevX = x;
+    prevY = y;
+    prevR = r;
   };
 }

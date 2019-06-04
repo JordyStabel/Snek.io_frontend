@@ -41,6 +41,7 @@ const App = () => {
               <Switch>
                 <Route exact path="/" component={MainPage} />
                 <Route exact path="/register" component={Register} />
+                <Route exact path="/game" component={LandingPage} />
                 <Route component={NotFound} />
               </Switch>
             </div>
