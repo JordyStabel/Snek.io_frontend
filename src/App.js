@@ -11,7 +11,7 @@ import Alert from "./components/Alert";
 import LandingPage from "./components/LandingPage";
 import Register from "./components/Register";
 import Loading from "./components/Loading";
-import MainPage from "./components/MainPage";
+import MainPage from "./components/mainpage/MainPage";
 import Navbar from "./components/Navbar";
 import NotFound from "./components/NotFound";
 

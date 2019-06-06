@@ -2,12 +2,12 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 // //import Logo from "../layout/morc_loading.png";
-import Logo from "../images/SnekIO_logo.png";
+import Logo from "../../images/SnekIO_logo.png";
 // import Showcase from "../../images/cards_bg.png";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import LandingPage from "./LandingPage";
-import { login } from "../actions/authAction";
+import MainPageSketch from "./MainPageSketch";
+import { login } from "../../actions/authAction";
 
 //#region Styled Components
 const Wrapper = styled.div`
@@ -47,7 +47,6 @@ const Left = styled.div`
 
 const Right = styled.div`
   flex: 1;
-  background-color: blueviolet;
 `;
 //#endregion
 
@@ -144,7 +143,9 @@ const styles = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    // background: `url(${Showcase}) no-repeat center center / cover`,
+    background: `url(https://picsum.photos/id/${Math.floor(
+      Math.random() * 300
+    )}/200/300) no-repeat center center / cover`,
     height: "100%",
     textAlign: "center"
   },
@@ -273,21 +274,21 @@ class MainPage extends Component {
           </footer>
         </Left>
         <Right id="right">
-          {/* <div style={styles.showcase}> */}
-          {/* <div className="showcase-content">
+          {/* <MainPageSketch /> */}
+          <div style={styles.showcase}>
+            <div className="showcase-content">
               <h1 style={styles.showcase_text}>
                 <strong>Snek</strong>IO
               </h1>
               <a
-                href="/"
+                href="/register"
                 className="btn btn-outline-secondary"
                 style={{ color: "white", width: "60%" }}
               >
                 Start Playing For FREE Today!
               </a>
-            </div> */}
-          <LandingPage />
-          {/* </div> */}
+            </div>
+          </div>
         </Right>
       </Wrapper>
     );
