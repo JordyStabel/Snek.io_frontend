@@ -15,7 +15,7 @@ export default class Ball {
   }
 
   draw() {
-    this.p.fill(255, 255, 0);
+    //this.p.fill(255, 255, 0);
     this.p.circle(this.position.x, this.position.y, this.r);
   }
 }

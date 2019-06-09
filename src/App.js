@@ -16,7 +16,6 @@ import Navbar from "./components/Navbar";
 import NotFound from "./components/NotFound";
 
 const App = () => {
-  //return <LandingPage />;
   return (
     <Provider store={store}>
       <Router>
