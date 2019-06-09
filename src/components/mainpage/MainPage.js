@@ -144,8 +144,8 @@ const styles = {
     justifyContent: "center",
     alignItems: "center",
     background: `url(https://picsum.photos/id/${Math.floor(
-      Math.random() * 300
-    )}/200/300) no-repeat center center / cover`,
+      Math.random() * 1000
+    )}/1080/1920) no-repeat center center / cover`,
     height: "100%",
     textAlign: "center"
   },

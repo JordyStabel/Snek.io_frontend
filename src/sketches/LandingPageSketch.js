@@ -148,18 +148,6 @@ export default function sketch(p) {
         ball.r = 50;
       }
     });
-
-    //#region Old Code
-    // let circle = {
-    //   x: Math.floor(Math.random() * (window.innerWidth - 80) + 60),
-    //   y: Math.floor(Math.random() * (window.innerHeight - 80) + 60),
-    //   diameter: Math.floor(Math.random() * 100 + 20),
-    //   dx: (Math.random() - 0.5) * 4,
-    //   dy: (Math.random() - 0.5) * 4
-    // };
-    // circles.push(circle);
-    // this.props.receiveMessage(JSON.parse(event.data).messageData);
-    //#endregion
   };
 
   webSocket.onclose = () => {
@@ -186,16 +174,6 @@ export default function sketch(p) {
   };
 
   function test() {
-    if (
-      webSocket.readyState !== 1 ||
-      p.mouseX < 0 ||
-      p.mouseX > width ||
-      p.mouseY < 0 ||
-      p.mouseY > height
-    ) {
-      return;
-    }
-
     // 10 per second timer (at 60 fps)
     if (p.frameCount % 6 === 0) {
       let input = {
@@ -231,6 +209,10 @@ export default function sketch(p) {
       sneks[i].y = sneks[i + 1].y;
     }
   }
+
+  p.mouseWheel = event => {
+    event.delta / 100 < 0 ? (zoom *= 1.035) : (zoom /= 1.035);
+  };
 
   let snake = new Snake(250, 250, 125, p);
   let trail = new Trail(250, 250, 100, p);
@@ -320,7 +302,7 @@ export default function sketch(p) {
     // Camera move with Snek (test)
     // Starting point now at the center of the canvas
     p.translate(width / 2, height / 2);
-    p.scale(1);
+    p.scale(zoom);
     p.translate(
       -mouseInputReferencePoint.position.x,
       -mouseInputReferencePoint.position.y
@@ -399,12 +381,6 @@ export default function sketch(p) {
     // let r = p.lerp(prevR, ball.r, 0.05);
 
     // Update mouse position to server
-    let velocity = p.createVector(p.mouseX - width / 2, p.mouseY - height / 2);
-    velocity.setMag(3);
-    vel = p.lerp(velocity, 0.1);
-    //this.position.add(velocity);
-    position.add(vel);
-
     let input = {
       x: mouseInputReferencePoint.vel.x,
       y: mouseInputReferencePoint.vel.y
@@ -425,14 +401,27 @@ export default function sketch(p) {
     if (players !== null) {
       players.map(player => {
         p.fill(255);
-        p.circle(player.inputMouse.x, player.inputMouse.y, 50);
-        player.snek.tail.map(position => {
-          // if (snekMap[snek.uuid] == null) {
-          //   snekMap[snek.uuid] = snek; // new Ball(snek.x, snek.y, snek.r, p);
-          // }
+        p.circle(player.inputMouse.x, player.inputMouse.y, 15);
+        player.snek.tail.map((position, index) => {
+          // Add the position if it isn't already in the mpa
+          // Use name + index as identifier
+          if (snekMap[player.name + index] == null) {
+            snekMap[player.name + index] = position;
+          }
+
+          // Draw all Sneks with interpolated server data (for final use)
+          p.fill(255, 255, 0);
+          p.stroke(0, 0, 0, 100);
+          let _snek = snekMap[player.name + index];
+          let x = p.lerp(_snek.x, position.x, 0.05);
+          let y = p.lerp(_snek.y, position.y, 0.05);
+          p.circle(x, y, player.snek.r * 1.5);
+          _snek.x = x;
+          _snek.y = y;
+
+          // Draw all Sneks with only server data (for debug use only)
           p.fill(255, 0, 0);
-          p.circle(position.x, position.y, player.snek.r);
-          //console.log(`ply: [${position.x},${position.y}]`);
+          p.circle(position.x, position.y, 15);
         });
       });
     }
