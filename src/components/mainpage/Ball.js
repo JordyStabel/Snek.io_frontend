@@ -7,21 +7,10 @@ export default class Ball {
     this.vel = p.createVector(0, 0);
   }
 
-  update(x, y, isServerObject) {
-    let velocity;
-    if (!isServerObject) {
-      velocity = this.p.createVector(
-        x - this.p.width / 2,
-        y - this.p.height / 2
-      );
-      velocity.setMag(this.maxMag);
-      this.position.add(velocity);
-      return;
-    }
-    velocity = this.p.createVector(x - this.p.width / 2, y - this.p.height / 2);
-    velocity.setMag(3);
-    this.vel.lerp(velocity, 0.01);
-    this.position.add(velocity);
+  update(x, y) {
+    let velocity = this.p.createVector(x, y);
+    velocity.setMag(this.maxMag);
+    this.vel.lerp(velocity, 0.05);
     this.position.add(this.vel);
   }
 

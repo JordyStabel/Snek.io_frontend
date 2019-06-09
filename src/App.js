@@ -23,7 +23,7 @@ const App = () => {
         <Fragment>
           <div className="app">
             <Navbar />
-            <div className="container-fluid">
+            <div className="container-fluid" id="main-container">
               <div
                 style={{
                   position: "absolute",

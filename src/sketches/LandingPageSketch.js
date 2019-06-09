@@ -10,6 +10,10 @@ let id;
 let players = null;
 let sneks = [];
 let canvas;
+let vel;
+let position;
+
+let mouseInputReferencePoint;
 
 let target = 650;
 let x = 100;
@@ -67,6 +71,30 @@ export default function sketch(p) {
 
   let ballz = new ballll(0, 0, 100, p);
 
+  p.setup = function() {
+    //p.frameRate(5);
+    height = window.innerHeight - 56;
+    width = window.innerWidth;
+
+    position = p.createVector(width / 2, height / 2);
+    position.setMag(1);
+
+    canvas = p.createCanvas(width, height);
+
+    // Draw some random dots on the screen, so it's easier to see the camera movement
+    for (let i = 0; i < 1000; i++) {
+      ball = {
+        x: p.random(-width * 5, width * 5), //p.randomGaussian(width * 5, width),
+        y: p.random(-height * 5, height * 5) //p.randomGaussian(height * 5, height)
+      };
+      balls.push(ball);
+    }
+
+    //this.circles();
+    //canvas.mouseMoved(test);
+  };
+
+  mouseInputReferencePoint = new Ball(width / 2, height / 2, 75, p);
   // Websocket testing stuff
   const webSocket = new WebSocket("ws://localhost:1337/test/");
 
@@ -76,7 +104,11 @@ export default function sketch(p) {
 
     let output = {
       name: uuid.v4(),
-      color: "#0984e3"
+      color: "#0984e3",
+      startingPosition: {
+        x: mouseInputReferencePoint.position.x,
+        y: mouseInputReferencePoint.position.y
+      }
     };
 
     let message = {
@@ -84,7 +116,6 @@ export default function sketch(p) {
       content: JSON.stringify(output)
     };
     id = output.name;
-    console.log(id);
     webSocket.send(JSON.stringify(message));
   };
 
@@ -117,40 +148,6 @@ export default function sketch(p) {
         ball.r = 50;
       }
     });
-
-    // Draw other players
-    if (players !== null) {
-      players.map(player => {
-        p.circle(player.inputMouse.x, player.inputMouse.y, 50);
-        player.sneks.map(snek => {
-          if (snekMap[snek.uuid] == null) {
-            snekMap[snek.uuid] = new Ball(snek.x, snek.y, snek.r, p);
-          }
-          let _snek = snekMap[snek.uuid];
-          let x = p.lerp(_snek.x, snek.x, 0.05);
-          let y = p.lerp(_snek.y, snek.y, 0.05);
-          _snek.x = x;
-          _snek.y = y;
-          _snek.update(x, y, true);
-          //_snek.draw();
-
-          // OLD WAY!!
-          // OLD WAY!!
-          // OLD WAY!!
-          // OLD WAY!!
-          // Add snek to map for first time
-          // if (snekMap[snek.uuid] == null) {
-          //   snekMap[snek.uuid] = snek;
-          // }
-          // let _snek = snekMap[snek.uuid];
-          // let x = p.lerp(_snek.x, snek.x, 0.05);
-          // let y = p.lerp(_snek.y, snek.y, 0.05);
-          // p.circle(x, y, snek.r);
-          // _snek.x = x;
-          // _snek.y = y;
-        });
-      });
-    }
 
     //#region Old Code
     // let circle = {
@@ -188,26 +185,6 @@ export default function sketch(p) {
     }
   };
 
-  p.setup = function() {
-    //p.frameRate(5);
-    height = window.innerHeight - 56;
-    width = window.innerWidth;
-
-    canvas = p.createCanvas(width, height);
-
-    // Draw some random dots on the screen, so it's easier to see the camera movement
-    for (let i = 0; i < 1000; i++) {
-      ball = {
-        x: p.random(-width * 5, width * 5), //p.randomGaussian(width * 5, width),
-        y: p.random(-height * 5, height * 5) //p.randomGaussian(height * 5, height)
-      };
-      balls.push(ball);
-    }
-
-    //this.circles();
-    //canvas.mouseMoved(test);
-  };
-
   function test() {
     if (
       webSocket.readyState !== 1 ||
@@ -235,8 +212,8 @@ export default function sketch(p) {
 
   // Resizing the canvas when the webwindow size is changed
   p.windowResized = () => {
-    width = document.getElementById("right").offsetWidth;
-    height = document.getElementById("right").offsetHeight;
+    width = document.getElementById("main-container").offsetWidth;
+    height = document.getElementById("main-container").offsetHeight;
     p.resizeCanvas(width, height);
   };
 
@@ -340,6 +317,22 @@ export default function sketch(p) {
     }
 
     p.background(51);
+    // Camera move with Snek (test)
+    // Starting point now at the center of the canvas
+    p.translate(width / 2, height / 2);
+    p.scale(1);
+    p.translate(
+      -mouseInputReferencePoint.position.x,
+      -mouseInputReferencePoint.position.y
+    );
+
+    // Main reference point for the Snek to use as input values
+    mouseInputReferencePoint.update(
+      p.mouseX - width / 2,
+      p.mouseY - height / 2
+    );
+    p.fill(255, 128, 0);
+    mouseInputReferencePoint.draw();
 
     x = p.lerp(x, target, 0.05);
 
@@ -350,12 +343,17 @@ export default function sketch(p) {
     snake.update(-p.mouseX, -p.mouseY);
     snake.draw();
 
-    // Camera move with Snek (test)
-    // Starting point now at the center of the canvas
-    p.translate(width / 2, height / 2);
-    p.scale(0.5);
-    //p.translate(-ball.x, -ball.y);
-    p.translate(-sneks[0].position.x, -sneks[0].position.y);
+    // Follow the head of players own snek
+    // if (players != null) {
+    //   const player = players.find(player => player.name === id);
+    //   if (player != null) {
+    //     console.log(player);
+    //     console.log(player.inputMouse.x);
+    //     p.translate(-player.inputMouse.x, -player.inputMouse.y);
+    //   }
+    // } else {
+    //   p.translate(-sneks[0].position.x, -sneks[0].position.y);
+    // }
 
     if (p.frameCount % 4 === 0) {
       trail.update(sneks[0].position.x, sneks[0].position.y);
@@ -387,11 +385,11 @@ export default function sketch(p) {
 
     // Need to fix this, so the game continues when a player move mouse outside of the game window
     if (
-      webSocket.readyState !== 1 ||
-      p.mouseX < 0 ||
-      p.mouseX > width ||
-      p.mouseY < 0 ||
-      p.mouseY > height
+      webSocket.readyState !== 1
+      // p.mouseX < 0 ||
+      // p.mouseX > width ||
+      // p.mouseY < 0 ||
+      // p.mouseY > height
     ) {
       return;
     }
@@ -403,10 +401,13 @@ export default function sketch(p) {
     // Update mouse position to server
     let velocity = p.createVector(p.mouseX - width / 2, p.mouseY - height / 2);
     velocity.setMag(3);
+    vel = p.lerp(velocity, 0.1);
+    //this.position.add(velocity);
+    position.add(vel);
 
     let input = {
-      x: velocity.x,
-      y: velocity.y
+      x: mouseInputReferencePoint.vel.x,
+      y: mouseInputReferencePoint.vel.y
     };
     let message = {
       action: "INPUTMOUSE",
@@ -423,29 +424,15 @@ export default function sketch(p) {
 
     if (players !== null) {
       players.map(player => {
+        p.fill(255);
         p.circle(player.inputMouse.x, player.inputMouse.y, 50);
-        player.sneks.map(snek => {
-          if (snekMap[snek.uuid] == null) {
-            snekMap[snek.uuid] = snek; // new Ball(snek.x, snek.y, snek.r, p);
-          }
-          // let _snek = snekMap[snek.uuid];
-          // _snek.position.x = snek.x;
-          // _snek.position.y = snek.y;
-          // _snek.update(snek.x, snek.y, true);
-          // _snek.draw();
-
-          // OLD WAY!!
-          // OLD WAY!!
-          // OLD WAY!!
-          // OLD WAY!!
-          // Add snek to map for first time
-          let _snek = snekMap[snek.uuid];
-          let x = p.lerp(_snek.x, snek.x, 0.05);
-          let y = p.lerp(_snek.y, snek.y, 0.05);
+        player.snek.tail.map(position => {
+          // if (snekMap[snek.uuid] == null) {
+          //   snekMap[snek.uuid] = snek; // new Ball(snek.x, snek.y, snek.r, p);
+          // }
           p.fill(255, 0, 0);
-          p.circle(x, y, 250);
-          _snek.x = x;
-          _snek.y = y;
+          p.circle(position.x, position.y, player.snek.r);
+          //console.log(`ply: [${position.x},${position.y}]`);
         });
       });
     }
