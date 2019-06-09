@@ -20,13 +20,13 @@ export default class Ball {
     }
     velocity = this.p.createVector(x - this.p.width / 2, y - this.p.height / 2);
     velocity.setMag(3);
-    //this.vel.lerp(velocity, 0.01);
+    this.vel.lerp(velocity, 0.01);
     this.position.add(velocity);
-    //this.position.add(this.vel);
+    this.position.add(this.vel);
   }
 
   draw() {
-    this.p.fill(255);
+    this.p.fill(255, 255, 0);
     this.p.circle(this.position.x, this.position.y, this.r);
   }
 }
