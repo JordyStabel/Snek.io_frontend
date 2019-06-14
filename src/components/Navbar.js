@@ -36,6 +36,11 @@ const AppNavbar = () => {
                   </Link>
                 </li>
                 <li className="nav-item">
+                  <Link to="/shop" className="nav-link">
+                    Shop
+                  </Link>
+                </li>
+                <li className="nav-item">
                   <Link to="/game" className="nav-link">
                     Game
                   </Link>

@@ -10,10 +10,10 @@ import store from "./store";
 import Alert from "./components/Alert";
 import LandingPage from "./components/LandingPage";
 import Register from "./components/Register";
-import Loading from "./components/Loading";
 import MainPage from "./components/mainpage/MainPage";
 import Navbar from "./components/Navbar";
 import NotFound from "./components/NotFound";
+import PrivateRoute from "./components/routing/PrivateRoute";
 
 const App = () => {
   return (
@@ -40,7 +40,7 @@ const App = () => {
               <Switch>
                 <Route exact path="/" component={MainPage} />
                 <Route exact path="/register" component={Register} />
-                <Route exact path="/game" component={LandingPage} />
+                <PrivateRoute exact path="/game" component={LandingPage} />
                 <Route component={NotFound} />
               </Switch>
             </div>

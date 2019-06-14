@@ -13,10 +13,10 @@ class Register extends Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    // if (nextProps.auth) {
-    //   console.log(nextProps.auth);
-    //   this.props.history.push("/dashboard");
-    // }
+    if (nextProps.auth) {
+      console.log(nextProps.auth);
+      this.props.history.push("/game");
+    }
   }
 
   onSubmit = event => {

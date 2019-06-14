@@ -1,12 +1,8 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 import styled from "styled-components";
-// //import Logo from "../layout/morc_loading.png";
 import Logo from "../../images/SnekIO_logo.png";
-// import Showcase from "../../images/cards_bg.png";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import MainPageSketch from "./MainPageSketch";
 import { login } from "../../actions/authAction";
 
 //#region Styled Components
@@ -165,12 +161,12 @@ class MainPage extends Component {
     loading: false
   };
 
-  // componentWillReceiveProps(nextProps) {
-  //   if (nextProps.auth) {
-  //     console.log(nextProps.auth);
-  //     this.props.history.push("/dashboard");
-  //   }
-  // }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.auth) {
+      console.log(nextProps.auth);
+      this.props.history.push("/game");
+    }
+  }
 
   onSubmit = event => {
     event.preventDefault();
@@ -274,7 +270,6 @@ class MainPage extends Component {
           </footer>
         </Left>
         <Right id="right">
-          {/* <MainPageSketch /> */}
           <div style={styles.showcase}>
             <div className="showcase-content">
               <h1 style={styles.showcase_text}>

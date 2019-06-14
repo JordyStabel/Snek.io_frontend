@@ -4,13 +4,31 @@ import Ball from "../components/mainpage/Ball";
 let paused = false;
 
 let id;
+let score = 0;
 let players = null;
+let orbs = null;
 let sneks = [];
 let mouseInputReferencePoint;
-let zoom = 1;
+let zoom = 2.25;
+
+let zoomScrollEnabled = false;
 
 // For testing only!
 let balls = [];
+
+// Posible player colors
+let colors = [
+  "#1abc9c",
+  "#2ecc71",
+  "#3498db",
+  "#9b59b6",
+  "#34495e",
+  "#f1c40f",
+  "#e67e22",
+  "#e74c3c",
+  "#7f8c8d",
+  "#f39c12"
+];
 
 var snekMap = {};
 
@@ -18,28 +36,6 @@ let width;
 let height;
 
 export default function sketch(p) {
-  class Snek {
-    constructor(x, y, r) {
-      this.x = x;
-      this.y = y;
-      this.r = r;
-    }
-
-    update() {
-      var velocity = this.createVector(
-        this.mouseX - this.width,
-        this.mouseY - this.height
-      );
-      velocity.setMag(3);
-      this.position.add(velocity);
-    }
-
-    draw() {
-      p.fill(255);
-      p.circle(this.x, this.y, this.r);
-    }
-  }
-
   // Create a few sneks for testing
   for (let i = 0; i < 10; i++) {
     let ball = new Ball(i * 25, i * 25, 75, p);
@@ -53,7 +49,7 @@ export default function sketch(p) {
     p.createCanvas(width, height);
 
     // Draw some random dots on the screen, so it's easier to see the camera movement
-    for (let i = 0; i < 1000; i++) {
+    for (let i = 0; i < 500; i++) {
       let ball = {
         x: p.random(-width * 5, width * 5), //p.randomGaussian(width * 5, width),
         y: p.random(-height * 5, height * 5),
@@ -73,9 +69,12 @@ export default function sketch(p) {
     //console.log(`Message: ${event.data}`);
     console.log("Connection opened");
 
+    id = uuid.v4();
+
     let output = {
-      name: uuid.v4(),
-      color: "#0984e3",
+      name: localStorage.getItem("snekio_username"),
+      color: colors[p.floor(p.random(colors.length))],
+      uuid: id,
       startingPosition: {
         x: mouseInputReferencePoint.position.x,
         y: mouseInputReferencePoint.position.y
@@ -86,13 +85,13 @@ export default function sketch(p) {
       action: "REGISTER",
       content: JSON.stringify(output)
     };
-    id = output.name;
     webSocket.send(JSON.stringify(message));
   };
 
   webSocket.onmessage = event => {
     const content = JSON.parse(JSON.parse(event.data).content);
     players = content.players;
+    orbs = content.orbs;
   };
 
   webSocket.onclose = () => {
@@ -100,17 +99,20 @@ export default function sketch(p) {
   };
 
   p.mousePressed = function() {
-    // TODO: Speedup the Snek
+    mouseInputReferencePoint.maxMag = 6;
   };
 
   p.mouseReleased = function() {
-    // TODO: Speeddown the Snek
+    mouseInputReferencePoint.maxMag = 3;
   };
 
   p.keyPressed = function() {
     // SPACE
-    if (p.keyCode == 32) {
+    if (p.keyCode === 32) {
       paused = !paused;
+    }
+    if (p.keyCode === 90) {
+      zoomScrollEnabled = !zoomScrollEnabled;
     }
   };
 
@@ -122,7 +124,9 @@ export default function sketch(p) {
   };
 
   p.mouseWheel = event => {
-    event.delta / 100 < 0 ? (zoom *= 1.035) : (zoom /= 1.035);
+    if (zoomScrollEnabled) {
+      event.delta / 100 < 0 ? (zoom *= 1.035) : (zoom /= 1.035);
+    }
   };
 
   p.draw = () => {
@@ -131,6 +135,11 @@ export default function sketch(p) {
     }
 
     p.background(51);
+
+    p.stroke(0);
+    p.fill(255);
+    p.textSize(35);
+    p.text(`Score: ${score}`, 50, 70);
 
     // Camera move with Snek
     // Starting point now at the center of the canvas
@@ -157,7 +166,6 @@ export default function sketch(p) {
       p.circle(balls[i].x, balls[i].y, balls[i].r);
     }
 
-    // Need to fix this, so the game continues when a player move mouse outside of the game window
     if (webSocket.readyState !== 1) {
       return;
     }
@@ -176,30 +184,60 @@ export default function sketch(p) {
       webSocket.send(JSON.stringify(message));
     }
 
+    // Draw all orbs with data from server
+    p.fill(50, 255, 50);
+    if (orbs !== null) {
+      // eslint-disable-next-line
+      orbs.map(orb => {
+        p.fill(50, 255, 50);
+        let x = orb.position.x;
+        let y = orb.position.y;
+        let r = Math.pow(orb.value, 2);
+        p.circle(x, y, r);
+      });
+    }
+
     if (players !== null) {
+      // eslint-disable-next-line
       players.map(player => {
-        p.fill(255);
-        p.circle(player.inputMouse.x, player.inputMouse.y, 15);
+        // Set player score & zoom level
+        if (player.uuid === id) {
+          score = player.snek.size;
+          if (!zoomScrollEnabled) {
+            zoom = p.lerp(zoom, 5 / Math.pow(score, 1 / 3), 0.05);
+          }
+        }
+
+        // eslint-disable-next-line
         player.snek.tail.map((position, index) => {
-          // Add the position if it isn't already in the mpa
+          // Add the position if it isn't already in the map
           // Use name + index as identifier
-          if (snekMap[player.name + index] == null) {
-            snekMap[player.name + index] = position;
+          if (snekMap[player.uuid + index] == null) {
+            snekMap[player.uuid + index] = position;
           }
 
           // Draw all Sneks with interpolated server data (for final use)
-          p.fill(255, 255, 0);
-          p.stroke(0, 0, 0, 100);
-          let _snek = snekMap[player.name + index];
+          p.fill(player.color);
+          p.stroke(0);
+          let _snek = snekMap[player.uuid + index];
           let x = p.lerp(_snek.x, position.x, 0.1);
           let y = p.lerp(_snek.y, position.y, 0.1);
           p.circle(x, y, player.snek.r);
           _snek.x = x;
           _snek.y = y;
 
+          // Display playername at first Snek head location
+          if (index === player.snek.tail.length - 1) {
+            p.fill(255);
+            p.textSize(25);
+            p.text(`${player.name}`, x, y);
+            p.textSize(8);
+            p.text(`${player.uuid}`, x, y + 10);
+          }
+
           // Draw all Sneks with only server data (for debug use only)
-          p.fill(255, 0, 0);
-          p.circle(position.x, position.y, 15);
+          //p.fill(255, 0, 0);
+          //p.circle(position.x, position.y, 15);
         });
       });
     }

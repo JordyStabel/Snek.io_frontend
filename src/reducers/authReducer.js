@@ -1,10 +1,9 @@
 import { LOGIN, REGISTER } from "../actions/types";
 
 const initialState = {
-  //token: localStorage.getItem("token"),
+  token: localStorage.getItem("snekio_username"),
   isAuthenticated: null,
-  loading: true,
-  user: null
+  loading: true
 };
 
 export default function(state = initialState, action) {
@@ -12,7 +11,7 @@ export default function(state = initialState, action) {
   switch (type) {
     case LOGIN:
     case REGISTER:
-      //localStorage.setItem("token", payload.token);
+      localStorage.setItem("snekio_username", payload.userName);
       return {
         ...state,
         ...payload,

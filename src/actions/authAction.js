@@ -57,6 +57,5 @@ export const register = newUser => async dispatch => {
         response.error
       )
     );
-    console.log(error.response.data);
   }
 };
