@@ -25,15 +25,20 @@ export const login = (email, password) => async dispatch => {
       payload: response.data
     });
   } catch (error) {
-    const response = error.response.data;
-    dispatch(
-      alertUser(
-        response.message,
-        response.status === 409 ? "warning" : "danger",
-        response.error
-      )
-    );
-    console.log(error.response.data);
+    try {
+      const response = error.response.data;
+      dispatch(
+        alertUser(
+          response.message,
+          response.status === 409 ? "warning" : "danger",
+          response.error
+        )
+      );
+    } catch (error) {
+      dispatch(
+        alertUser("Rest server probaly isn't running.", "danger", "No response")
+      );
+    }
   }
 };
 
@@ -49,13 +54,19 @@ export const register = newUser => async dispatch => {
       payload: response.data
     });
   } catch (error) {
-    const response = error.response.data;
-    dispatch(
-      alertUser(
-        response.message,
-        response.status === 409 ? "warning" : "danger",
-        response.error
-      )
-    );
+    try {
+      const response = error.response.data;
+      dispatch(
+        alertUser(
+          response.message,
+          response.status === 409 ? "warning" : "danger",
+          response.error
+        )
+      );
+    } catch (error) {
+      dispatch(
+        alertUser("No response", "danger", "Rest server probaly isn't running.")
+      );
+    }
   }
 };

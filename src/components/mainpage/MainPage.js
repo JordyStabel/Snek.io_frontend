@@ -141,7 +141,7 @@ const styles = {
     alignItems: "center",
     background: `url(https://picsum.photos/id/${Math.floor(
       Math.random() * 1000
-    )}/1080/1920) no-repeat center center / cover`,
+    )}/1200/800) no-repeat center center / cover`,
     height: "100%",
     textAlign: "center"
   },

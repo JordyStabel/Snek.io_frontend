@@ -10,6 +10,7 @@ let orbs = null;
 let sneks = [];
 let mouseInputReferencePoint;
 let zoom = 2.25;
+let isAlive = true;
 
 let zoomScrollEnabled = false;
 
@@ -89,9 +90,18 @@ export default function sketch(p) {
   };
 
   webSocket.onmessage = event => {
-    const content = JSON.parse(JSON.parse(event.data).content);
-    players = content.players;
-    orbs = content.orbs;
+    let parsedData = JSON.parse(event.data);
+
+    console.log(parsedData.action);
+
+    if (parsedData.action === "GAMESTATE") {
+      const content = JSON.parse(parsedData.content);
+      players = content.players;
+      orbs = content.orbs;
+    } else if (parsedData.action === "YOUDIED") {
+      // Extremely bad way of doing it but time...
+      window.location.reload();
+    }
   };
 
   webSocket.onclose = () => {
@@ -172,7 +182,7 @@ export default function sketch(p) {
 
     // Update mouse position to server
     // 10 per second timer (at 60 fps)
-    if (p.frameCount % 6 === 0) {
+    if (p.frameCount % 6 === 0 && isAlive) {
       let input = {
         x: mouseInputReferencePoint.vel.x * 6,
         y: mouseInputReferencePoint.vel.y * 6
@@ -192,7 +202,7 @@ export default function sketch(p) {
         p.fill(50, 255, 50);
         let x = orb.position.x;
         let y = orb.position.y;
-        let r = Math.pow(orb.value, 2);
+        let r = orb.value * 2;
         p.circle(x, y, r);
       });
     }

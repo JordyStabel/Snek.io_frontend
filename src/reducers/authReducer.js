@@ -2,8 +2,7 @@ import { LOGIN, REGISTER } from "../actions/types";
 
 const initialState = {
   token: localStorage.getItem("snekio_username"),
-  isAuthenticated: null,
-  loading: true
+  isAuthenticated: null
 };
 
 export default function(state = initialState, action) {
@@ -15,8 +14,7 @@ export default function(state = initialState, action) {
       return {
         ...state,
         ...payload,
-        isAuthenticated: true,
-        loading: false
+        isAuthenticated: true
       };
     default:
       return state;
