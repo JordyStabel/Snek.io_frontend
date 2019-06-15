@@ -12,8 +12,9 @@ import LandingPage from "./components/LandingPage";
 import Register from "./components/Register";
 import MainPage from "./components/mainpage/MainPage";
 import Navbar from "./components/Navbar";
+import About from "./components/About";
 import NotFound from "./components/NotFound";
-//import PrivateRoute from "./components/routing/PrivateRoute";
+import PrivateRoute from "./components/routing/PrivateRoute";
 
 const App = () => {
   return (
@@ -40,7 +41,8 @@ const App = () => {
               <Switch>
                 <Route exact path="/" component={MainPage} />
                 <Route exact path="/register" component={Register} />
-                <Route exact path="/game" component={LandingPage} />
+                <PrivateRoute exact path="/game" component={LandingPage} />
+                <Route exact path="/about" component={About} />
                 <Route component={NotFound} />
               </Switch>
             </div>

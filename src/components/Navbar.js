@@ -1,7 +1,51 @@
 import React, { Fragment } from "react";
+import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
+import { connect } from "react-redux";
+import { logout } from "../actions/authAction";
 
-const AppNavbar = () => {
+const AppNavbar = ({ auth: { isAuthenticated }, logout }) => {
+  const privateLinks = (
+    <ul className="navbar-nav mr-auto">
+      <li className="nav-item">
+        <Link to="/dashboard" className="nav-link">
+          Dashboard
+        </Link>
+      </li>
+      <li className="nav-item">
+        <Link to="/shop" className="nav-link">
+          Shop
+        </Link>
+      </li>
+      <li className="nav-item">
+        <Link to="/friends" className="nav-link">
+          Friends
+        </Link>
+      </li>
+      <li className="nav-item">
+        <Link to="/game" className="nav-link">
+          Game
+        </Link>
+      </li>
+      <li>
+        <a onClick={logout} href="#!">
+          <i className="fas fa-sign-out-alt" />{" "}
+          <span className="hide-sm">Logout</span>
+        </a>
+      </li>
+    </ul>
+  );
+
+  const publicLinks = (
+    <ul className="navbar-nav mr-auto">
+      <li className="nav-item">
+        <Link to="/about" className="nav-link">
+          About
+        </Link>
+      </li>
+    </ul>
+  );
+
   return (
     <nav className="navbar navbar-expand-md navbar-dark bg-primary">
       <div className="container-fluid">
@@ -17,41 +61,23 @@ const AppNavbar = () => {
           <span className="navbar-toggler-icon" />{" "}
         </button>
         <div className="collapse navbar-collapse" id="navbarMain">
-          {
-            <Fragment>
-              <ul className="navbar-nav mr-auto">
-                <li className="nav-item">
-                  <Link to="/dashboard" className="nav-link">
-                    Dashboard
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link to="/lobby" className="nav-link">
-                    Lobby
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link to="/social" className="nav-link">
-                    Social
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link to="/shop" className="nav-link">
-                    Shop
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link to="/game" className="nav-link">
-                    Game
-                  </Link>
-                </li>
-              </ul>
-            </Fragment>
-          }
+          {<Fragment>{isAuthenticated ? privateLinks : publicLinks}</Fragment>}
         </div>
       </div>
     </nav>
   );
 };
 
-export default AppNavbar;
+AppNavbar.propTypes = {
+  logout: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired
+};
+
+const mapStateProps = state => ({
+  auth: state.auth
+});
+
+export default connect(
+  mapStateProps,
+  { logout }
+)(AppNavbar);

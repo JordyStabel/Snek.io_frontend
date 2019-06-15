@@ -1,7 +1,7 @@
-import { LOGIN, REGISTER } from "../actions/types";
+import { LOGIN, LOGOUT, REGISTER } from "../actions/types";
 
 const initialState = {
-  token: localStorage.getItem("snekio_username"),
+  token: null,
   isAuthenticated: null
 };
 
@@ -15,6 +15,13 @@ export default function(state = initialState, action) {
         ...state,
         ...payload,
         isAuthenticated: true
+      };
+    case LOGOUT:
+      localStorage.removeItem("snekio_username");
+      return {
+        ...state,
+        token: null,
+        isAuthenticated: false
       };
     default:
       return state;

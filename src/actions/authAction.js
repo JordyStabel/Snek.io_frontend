@@ -1,4 +1,4 @@
-import { LOGIN, REGISTER } from "./types";
+import { LOGIN, LOGOUT, REGISTER } from "./types";
 import axios from "axios";
 import { alertUser } from "./alertAction";
 
@@ -69,4 +69,8 @@ export const register = newUser => async dispatch => {
       );
     }
   }
+};
+
+export const logout = () => dispatch => {
+  dispatch({ type: LOGOUT });
 };
