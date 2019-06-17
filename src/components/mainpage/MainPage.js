@@ -163,7 +163,6 @@ class MainPage extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.auth) {
-      console.log(nextProps.auth);
       this.props.history.push("/game");
     }
   }
@@ -276,7 +275,7 @@ class MainPage extends Component {
                 <strong>Snek</strong>IO
               </h1>
               <a
-                href="/register"
+                href="/play-for-free"
                 className="btn btn-outline-secondary"
                 style={{ color: "white", width: "60%" }}
               >

@@ -42,6 +42,7 @@ const App = () => {
                 <Route exact path="/" component={MainPage} />
                 <Route exact path="/register" component={Register} />
                 <PrivateRoute exact path="/game" component={LandingPage} />
+                <Route exact path="/play-for-free" component={LandingPage} />
                 <Route exact path="/about" component={About} />
                 <Route component={NotFound} />
               </Switch>

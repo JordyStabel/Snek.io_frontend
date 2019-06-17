@@ -34,6 +34,14 @@ body {
   color: #61dafb;
 }
 
+.navbar a {
+  color: #fff;
+}
+
+.navbar a:hover {
+  color: var(--primary-color);
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

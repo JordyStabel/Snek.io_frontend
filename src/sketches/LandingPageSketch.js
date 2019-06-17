@@ -92,8 +92,6 @@ export default function sketch(p) {
   webSocket.onmessage = event => {
     let parsedData = JSON.parse(event.data);
 
-    console.log(parsedData.action);
-
     if (parsedData.action === "GAMESTATE") {
       const content = JSON.parse(parsedData.content);
       players = content.players;
