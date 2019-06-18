@@ -3,9 +3,12 @@
   "homepage": "https://jordystabel.github.io/Snek.io_frontend/",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "10.9.0",
+    "npm": "6.4.1"
+  },
   "dependencies": {
     "axios": "^0.18.0",
-    "gh-pages": "^2.0.1",
     "p5": "^0.8.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
@@ -21,7 +24,6 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "deploy": "gh-pages -d build",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
