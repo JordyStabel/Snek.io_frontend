@@ -64,13 +64,15 @@ export default function sketch(p) {
   mouseInputReferencePoint = new Ball(width / 2, height / 2, 25, p);
 
   // Create Websocket
-  const url1 = "localhost:1337";
-  const url2 = localStorage.getItem("snek_ip");
-  const webSocket =
-    url2 == null || url2 === ""
-      ? new WebSocket(`ws://${url1}/test/`)
-      : new WebSocket(`ws://${url2}/test/`);
-  console.log(webSocket.url);
+  // const url1 = "localhost:1337";
+  // const url2 = localStorage.getItem("snek_ip");
+  // const webSocket =
+  //   url2 == null || url2 === ""
+  //     ? new WebSocket(`ws://${url1}/test/`)
+  //     : new WebSocket(`ws://${url2}:1337/test/`);
+  // console.log(webSocket.url);
+
+  const webSocket = new WebSocket("ws://192.168.188.35:1337/test/");
 
   webSocket.onopen = event => {
     //console.log(`Message: ${event.data}`);
